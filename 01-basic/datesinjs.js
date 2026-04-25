@@ -26,3 +26,4 @@ let myDate = new Date(); //current date and time
 // const dateFromTimestamp = new Date(1018734496659); // creating a date object from a timestamp (number of milliseconds since January 1, 1970, 00:00:00 UTC)
 // console.log(dateFromTimestamp.toLocaleString()); // Wed Mar 19 1973 17:44:56 GMT+0000 (Coordinated Universal Time) - the date and time corresponding to the given timestamp.
 console.log(myDate.toLocaleString('default', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })) // Wednesday, June 19, 2024 - toLocaleString() method with options allows you to specify the format of the date and time string. In this case, it will return a string that includes the full weekday name, the numeric year, the full month name, and the numeric day of the month. The exact format may vary depending on the user's location and settings.
+
