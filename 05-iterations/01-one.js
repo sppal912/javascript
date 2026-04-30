@@ -29,7 +29,7 @@ for (let index = 0; index < heros.length; index++) {
     
 }
 
- break and continue
+ //break and continue
 
 for (let index = 1; index < 20; index++) {
     if (index == 5) {
