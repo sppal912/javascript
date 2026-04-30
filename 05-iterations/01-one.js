@@ -1,43 +1,43 @@
 // for
 
-// for (let i = 0; i <= 10; i++) {
-//     console.log(i);
-// }
+for (let i = 0; i <= 10; i++) {
+    console.log(i);
+}
 
-// for (let i = 0; i <= 10; i++) {
-//     const element = i;
-//     if(element === 5){
-//         console.log(`5 is the best no`)
-//     }
-//     console.log(element)
-// }
+for (let i = 0; i <= 10; i++) {
+    const element = i;
+    if(element === 5){
+        console.log(`5 is the best no`)
+    }
+    console.log(element)
+}
 
-// for (let i = 1; i < 10; i++) {
-//     const element =  (`tabile of: ${i}`);
-//     console.log(element)
-//     for(let j = 1; j <= 10; j++){
-//         console.log(`${i} * ${j} = ${i * j}`);
-//     }
+for (let i = 1; i < 10; i++) {
+    const element =  (`tabile of: ${i}`);
+    console.log(element)
+    for(let j = 1; j <= 10; j++){
+        console.log(`${i} * ${j} = ${i * j}`);
+    }
     
-// }
+}
 
-// const heros = ['ram', 'lakshman', 'sita', 'hanuman']
+const heros = ['ram', 'lakshman', 'sita', 'hanuman']
 
-// for (let index = 0; index < heros.length; index++) {
-//     const element = heros[index];
-//     console.log(element)
+for (let index = 0; index < heros.length; index++) {
+    const element = heros[index];
+    console.log(element)
     
-// }
+}
 
-//  break and continue
+ break and continue
 
-// for (let index = 1; index < 20; index++) {
-//     if (index == 5) {
-//         console.log(`value 5 is detected`)
-//         break
-//     } 
-//     console.log(`value is ${index}`);
-// }  
+for (let index = 1; index < 20; index++) {
+    if (index == 5) {
+        console.log(`value 5 is detected`)
+        break
+    } 
+    console.log(`value is ${index}`);
+}  
 
 
 for (let index = 1; index < 20; index++) {
