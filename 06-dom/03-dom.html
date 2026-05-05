@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dom manupulation</title>
+    <style>background-color: black; color: white;</style>
+</head>
+<body style="background-color: black; color: wheat; text-align: center; align-items: center; justify-content: center;">
+    <div class="parent">
+        <div class="day">monday</div>
+        <div class="day">thuseday</div>
+        <div class="day">wednesday</div>
+        <div class="day">thursday</div>
+    </div>
+    <script>
+const parent = document.querySelector('.parent')
+/* console.log(parent)    
+console.log(parent.children)    
+console.log(parent.children[0].innerHTML)     */
+/* for(let i = 0; i < parent.children.length; i++){
+    console.log(parent.children[i].innerHTML)
+} */
+ parent.children[1].style.color = 'red'
+ /* console.log(parent.firstElementChild); */
+ const dayone = document.querySelector('.day')
+ console.log(dayone)
+ console.log(dayone.parentElement);
+ console.log(dayone.nextElementSibling);
+
+ console.log('NODES: ', parent.childNodes);
+    </script>
+</body>
+</html>
