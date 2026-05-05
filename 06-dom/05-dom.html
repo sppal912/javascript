@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dom - 05 </title>
+</head>
+<body style="background-color: black; color: white;">
+    <ul class="lng">
+        <li>javscript</li>
+    </ul>
+    <script>
+
+        // this is better and morden 
+       const addlng = (langName) => {
+            const lng = document.querySelector('.lng')
+            const li = document.createElement('li')
+            li.textContent = langName;
+            lng.appendChild(li)
+        }
+        addlng('python');
+        addlng('java');
+
+        // method no 2 this is use When working with complex DOM node manipulation When you need fine control over nodes this is old tecnic
+        function addlung (lang) {
+            const li = document.createElement('li')
+            li.appendChild(document.createTextNode(lang))
+            document.querySelector('.lng').appendChild(li)
+        }
+        addlung('mongo-db')
+
+        // Edit
+
+        const secondLang = document.querySelector('li:nth-of-type(2)');
+        secondLang.textContent = 'ruby'
+        const newli = document.createElement('li')
+        newli.textContent = 'html'
+        secondLang.replaceWith(newli)
+       
+       
+        secondLang.textContent = 'css'
+
+
+
+
+    </script>
+</body>
+</html>
