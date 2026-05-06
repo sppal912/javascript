@@ -13,10 +13,20 @@ form.addEventListener('submit', (e) => {
         results.innerHTML = `please enter a valid weight ${weight}`
     }else {
         const bmi = (weight / ((height * height) / 10000)).toFixed(2);
-        results.innerHTML = `<pan> ${bmi} </pan>`;
-    }
+        
+        let message = ""
+        let color = ''
 
-    if(results.innerHTML > 24.9) {
-        results.innerHTML = `You are BMI is high ${results}`
+        if (bmi < 18.6) {
+            message = "(Underweight)"
+            color = 'orange'
+        } else if (bmi >= 18.6 && bmi <= 24.9) {
+            message = "(Normal)"
+            color = 'green'
+        } else {
+            message = "(High)" 
+            color = 'red'       
+        }
+        results.innerHTML = `<span style="color:${color}"> Your BMI is ${bmi} ${message} </span>`;   
     }
 });
