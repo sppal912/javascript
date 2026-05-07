@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Typing Test Tool</title>
+
+  <style>
+    /* Reset default browser spacing */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Center the application on the screen */
+    body {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: white;
+    }
+
+    /* Main container styling */
+    .container {
+      width: 100%;
+      max-width: 700px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Application heading */
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2.2rem;
+    }
+
+    /* Container for statistics cards */
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    /* Individual statistics card */
+    .card {
+      flex: 1;
+      min-width: 120px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+
+    .card p {
+      font-size: 1.4rem;
+      font-weight: bold;
+    }
+
+    /* Box that displays the typing quote */
+    .quote-box {
+      background: rgba(255, 255, 255, 0.12);
+      padding: 20px;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      min-height: 120px;
+      word-wrap: break-word;
+    }
+
+    /* Correct typed character */
+    .quote-box span.correct {
+      color: #7cfc00;
+    }
+
+    /* Incorrect typed character */
+    .quote-box span.wrong {
+      color: #ff4d4d;
+      text-decoration: underline;
+    }
+
+    /* Current active character */
+    .quote-box span.active {
+      background: yellow;
+      color: black;
+      border-radius: 2px;
+    }
+
+    /* Typing input field */
+    textarea {
+      width: 100%;
+      height: 140px;
+      border: none;
+      outline: none;
+      resize: none;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    /* Buttons container */
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Common button styles */
+    button {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: transform 0.2s ease;
+    }
+
+    /* Slight zoom effect on hover */
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    /* Start button color */
+    .start-btn {
+      background: #00c853;
+      color: white;
+    }
+
+    /* Reset button color */
+    .reset-btn {
+      background: #ff5252;
+      color: white;
+    }
+
+    /* Responsive layout for small devices */
+    @media (max-width: 600px) {
+      .stats {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Typing Test Tool</h1>
+
+    <!-- Statistics section -->
+    <div class="stats">
+      <div class="card">
+        <h2>Time</h2>
+        <p id="time">60</p>
+      </div>
+
+      <div class="card">
+        <h2>WPM</h2>
+        <p id="wpm">0</p>
+      </div>
+
+      <div class="card">
+        <h2>Accuracy</h2>
+        <p id="accuracy">100%</p>
+      </div>
+    </div>
+
+    <!-- Quote display area -->
+    <div class="quote-box" id="quote"></div>
+
+    <!-- User typing area -->
+    <textarea
+      id="input"
+      placeholder="Start typing here..."
+      disabled
+    ></textarea>
+
+    <!-- Buttons -->
+    <div class="buttons">
+      <button class="start-btn" id="startBtn">Start Test</button>
+      <button class="reset-btn" id="resetBtn">Reset</button>
+    </div>
+  </div>
+
+  <script>
+    // List of quotes used for typing practice
+    const quotes = [
+      'JavaScript is one of the most popular programming languages in the world.',
+      'Practice every day to improve your typing speed and coding skills.',
+      'Frontend developers use HTML CSS and JavaScript to build websites.',
+      'Consistency is more important than perfection when learning programming.',
+      'Typing fast with accuracy can save a lot of time during coding.'
+    ];
+
+    // Selecting required HTML elements
+    const quoteElement = document.getElementById('quote');
+    const inputElement = document.getElementById('input');
+    const timeElement = document.getElementById('time');
+    const wpmElement = document.getElementById('wpm');
+    const accuracyElement = document.getElementById('accuracy');
+    const startBtn = document.getElementById('startBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    // Application state variables
+    let currentQuote = '';
+    let timer = null;
+    let timeLeft = 60;
+    let started = false;
+
+    // Load a random quote into the quote box
+    function loadQuote() {
+      // Pick a random quote from the array
+      currentQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
+      // Clear previous quote
+      quoteElement.innerHTML = '';
+
+      // Create a span for every character
+      currentQuote.split('').forEach((char, index) => {
+        const span = document.createElement('span');
+        span.innerText = char;
+
+        // Highlight the first character initially
+        if (index === 0) {
+          span.classList.add('active');
+        }
+
+        quoteElement.appendChild(span);
+      });
+    }
+
+    // Calculate WPM and accuracy
+    function calculateStats() {
+      const typedText = inputElement.value;
+      const typedCharacters = typedText.length;
+
+      let correctCharacters = 0;
+
+      // Count correctly typed characters
+      typedText.split('').forEach((char, index) => {
+        if (char === currentQuote[index]) {
+          correctCharacters++;
+        }
+      });
+
+      // Convert elapsed time into minutes
+      const elapsedMinutes = (60 - timeLeft) / 60;
+
+      // Standard WPM formula:
+      // 5 characters = 1 word
+      const wpm = elapsedMinutes > 0
+        ? Math.round((correctCharacters / 5) / elapsedMinutes)
+        : 0;
+
+      // Accuracy percentage calculation
+      const accuracy = typedCharacters > 0
+        ? Math.round((correctCharacters / typedCharacters) * 100)
+        : 100;
+
+      // Update UI values
+      wpmElement.innerText = wpm;
+      accuracyElement.innerText = `${accuracy}%`;
+    }
+
+    // Stop the test and disable typing
+    function finishTest(message) {
+      clearInterval(timer);
+      timer = null;
+      started = false;
+
+      // Prevent further typing
+      inputElement.disabled = true;
+
+      // Show completion message slightly later
+      if (message) {
+        setTimeout(() => {
+          alert(message);
+        }, 100);
+      }
+    }
+
+    // Start the typing test
+    function startTest() {
+      // Prevent multiple timers from starting
+      if (started) {
+        return;
+      }
+
+      started = true;
+
+      // Enable typing area
+      inputElement.disabled = false;
+      inputElement.focus();
+
+      // Start countdown timer
+      timer = setInterval(() => {
+        timeLeft--;
+
+        // Update remaining time on screen
+        timeElement.innerText = timeLeft;
+
+        // Recalculate stats every second
+        calculateStats();
+
+        // Stop test when time reaches zero
+        if (timeLeft <= 0) {
+          timeLeft = 0;
+          timeElement.innerText = timeLeft;
+
+          finishTest('Time Over!');
+        }
+      }, 1000);
+    }
+
+    // Track user typing in real time
+    inputElement.addEventListener('input', () => {
+      const quoteCharacters = quoteElement.querySelectorAll('span');
+      const typedCharacters = inputElement.value.split('');
+
+      let isComplete = true;
+
+      // Compare each typed character with the quote
+      quoteCharacters.forEach((charSpan, index) => {
+        const character = typedCharacters[index];
+
+        // Remove previous status classes
+        charSpan.classList.remove('correct', 'wrong', 'active');
+
+        // Character not typed yet
+        if (character == null) {
+          isComplete = false;
+
+          // Highlight next character to type
+          if (index === typedCharacters.length) {
+            charSpan.classList.add('active');
+          }
+        }
+        // Correct character
+        else if (character === charSpan.innerText) {
+          charSpan.classList.add('correct');
+        }
+        // Incorrect character
+        else {
+          charSpan.classList.add('wrong');
+          isComplete = false;
+        }
+      });
+
+      // Update statistics instantly while typing
+      calculateStats();
+
+      // Finish test if the full quote is typed correctly
+      if (isComplete && typedCharacters.length === currentQuote.length) {
+        finishTest('Congratulations! You completed the test.');
+      }
+    });
+
+    // Reset the entire application state
+    function resetTest() {
+      clearInterval(timer);
+      timer = null;
+
+      // Reset all values
+      timeLeft = 60;
+      started = false;
+
+      // Reset UI values
+      timeElement.innerText = '60';
+      wpmElement.innerText = '0';
+      accuracyElement.innerText = '100%';
+
+      // Clear input field
+      inputElement.value = '';
+      inputElement.disabled = true;
+
+      // Load a new random quote
+      loadQuote();
+    }
+
+    // Start button event
+    startBtn.addEventListener('click', startTest);
+
+    // Reset button event
+    resetBtn.addEventListener('click', resetTest);
+
+    // Load initial quote when page opens
+    loadQuote();
+  </script>
+</body>
+</html>
