@@ -151,10 +151,67 @@
       color: white;
     }
 
+    /* Results screen styling */
+    .results-screen {
+      display: none;
+      text-align: center;
+    }
+
+    .results-screen.show {
+      display: block;
+    }
+
+    .results-screen h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: #00ff88;
+    }
+
+    .average-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .average-card {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 20px;
+      border-radius: 15px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .average-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      opacity: 0.9;
+    }
+
+    .average-card .value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #00ff88;
+    }
+
+    .test-count {
+      font-size: 1rem;
+      margin-top: 15px;
+      opacity: 0.8;
+    }
+
+    /* Hide main content when showing results */
+    .main-content.hide {
+      display: none;
+    }
+
     /* Responsive layout for small devices */
     @media (max-width: 600px) {
       .stats {
         flex-direction: column;
+      }
+
+      .average-stats {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -164,38 +221,63 @@
   <div class="container">
     <h1>Typing Test Tool</h1>
 
-    <!-- Statistics section -->
-    <div class="stats">
-      <div class="card">
-        <h2>Time</h2>
-        <p id="time">60</p>
+    <!-- Results Screen -->
+    <div class="results-screen" id="resultsScreen">
+      <h2>Test Complete! 🎉</h2>
+      <div class="average-stats">
+        <div class="average-card">
+          <h3>Average WPM</h3>
+          <div class="value" id="avgWpm">0</div>
+        </div>
+        <div class="average-card">
+          <h3>Average Accuracy</h3>
+          <div class="value" id="avgAccuracy">0%</div>
+        </div>
       </div>
-
-      <div class="card">
-        <h2>WPM</h2>
-        <p id="wpm">0</p>
+      <div class="test-count">
+        <p>Tests Completed: <strong id="testCount">0</strong></p>
       </div>
-
-      <div class="card">
-        <h2>Accuracy</h2>
-        <p id="accuracy">100%</p>
+      <div class="buttons">
+        <button class="start-btn" id="nextTestBtn">Take Another Test</button>
+        <button class="reset-btn" id="resetAllBtn">Reset All Results</button>
       </div>
     </div>
 
-    <!-- Quote display area -->
-    <div class="quote-box" id="quote"></div>
+    <!-- Main Test Content -->
+    <div class="main-content" id="mainContent">
+      <!-- Statistics section -->
+      <div class="stats">
+        <div class="card">
+          <h2>Time</h2>
+          <p id="time">60</p>
+        </div>
 
-    <!-- User typing area -->
-    <textarea
-      id="input"
-      placeholder="Start typing here..."
-      disabled
-    ></textarea>
+        <div class="card">
+          <h2>WPM</h2>
+          <p id="wpm">0</p>
+        </div>
 
-    <!-- Buttons -->
-    <div class="buttons">
-      <button class="start-btn" id="startBtn">Start Test</button>
-      <button class="reset-btn" id="resetBtn">Reset</button>
+        <div class="card">
+          <h2>Accuracy</h2>
+          <p id="accuracy">100%</p>
+        </div>
+      </div>
+
+      <!-- Quote display area -->
+      <div class="quote-box" id="quote"></div>
+
+      <!-- User typing area -->
+      <textarea
+        id="input"
+        placeholder="Start typing here..."
+        disabled
+      ></textarea>
+
+      <!-- Buttons -->
+      <div class="buttons">
+        <button class="start-btn" id="startBtn">Start Test</button>
+        <button class="reset-btn" id="resetBtn">Reset</button>
+      </div>
     </div>
   </div>
 
@@ -217,12 +299,20 @@
     const accuracyElement = document.getElementById('accuracy');
     const startBtn = document.getElementById('startBtn');
     const resetBtn = document.getElementById('resetBtn');
+    const mainContent = document.getElementById('mainContent');
+    const resultsScreen = document.getElementById('resultsScreen');
+    const avgWpmElement = document.getElementById('avgWpm');
+    const avgAccuracyElement = document.getElementById('avgAccuracy');
+    const testCountElement = document.getElementById('testCount');
+    const nextTestBtn = document.getElementById('nextTestBtn');
+    const resetAllBtn = document.getElementById('resetAllBtn');
 
     // Application state variables
     let currentQuote = '';
     let timer = null;
     let timeLeft = 60;
     let started = false;
+    let testResults = [];
 
     // Load a random quote into the quote box
     function loadQuote() {
@@ -277,6 +367,31 @@
       // Update UI values
       wpmElement.innerText = wpm;
       accuracyElement.innerText = `${accuracy}%`;
+
+      // Return current stats
+      return { wpm, accuracy };
+    }
+
+    // Show results screen with averages
+    function showResults() {
+      if (testResults.length === 0) return;
+
+      // Calculate averages
+      const avgWpm = Math.round(
+        testResults.reduce((sum, result) => sum + result.wpm, 0) / testResults.length
+      );
+      const avgAccuracy = Math.round(
+        testResults.reduce((sum, result) => sum + result.accuracy, 0) / testResults.length
+      );
+
+      // Update results display
+      avgWpmElement.innerText = avgWpm;
+      avgAccuracyElement.innerText = `${avgAccuracy}%`;
+      testCountElement.innerText = testResults.length;
+
+      // Hide main content and show results
+      mainContent.classList.add('hide');
+      resultsScreen.classList.add('show');
     }
 
     // Stop the test and disable typing
@@ -288,10 +403,15 @@
       // Prevent further typing
       inputElement.disabled = true;
 
+      // Get final stats and save to results
+      const stats = calculateStats();
+      testResults.push(stats);
+
       // Show completion message slightly later
       if (message) {
         setTimeout(() => {
           alert(message);
+          showResults();
         }, 100);
       }
     }
@@ -399,6 +519,21 @@
 
     // Reset button event
     resetBtn.addEventListener('click', resetTest);
+
+    // Next test button - go back to main content
+    nextTestBtn.addEventListener('click', () => {
+      mainContent.classList.remove('hide');
+      resultsScreen.classList.remove('show');
+      resetTest();
+    });
+
+    // Reset all results
+    resetAllBtn.addEventListener('click', () => {
+      testResults = [];
+      mainContent.classList.remove('hide');
+      resultsScreen.classList.remove('show');
+      resetTest();
+    });
 
     // Load initial quote when page opens
     loadQuote();
