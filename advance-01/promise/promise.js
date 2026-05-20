@@ -63,13 +63,16 @@
 // }
 // fetchUserData()
 
-async function getUserData() {
-   try {
-     const response = await fetch('https://api.github.com/users/sppal912')
-    const data = await response.json()
-    console.log(data.login)
-   } catch (error) {
-    console.log('e', error)
-   }
+async function getDetails() {
+    try {
+        const apiCall = await fetch('https://api.github.com/users/sppal912');
+    const dataProcess = await apiCall.json();
+    return dataProcess
+    } catch (error) {
+        console.log('ERROR 404 REQUEST NOT FOUND', error)
+    }
 }
-getUserData()
+getDetails().then((data) => {
+    console.log(data.login)
+    console.log(data.id)
+})
