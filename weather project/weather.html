@@ -41,7 +41,9 @@
             margin-bottom: 20px;
         }
 
-        #city-input, #state-input, #country-input {
+        #city-input,
+        #state-input,
+        #country-input {
             flex: 1;
             padding: 12px;
             border: 1px solid #ccc;
@@ -87,6 +89,18 @@
             border-radius: 10px;
             background: #f0f0f0;
         }
+
+        .second-row {
+            margin-top: 15px;
+        }
+
+        .third-row {
+            margin-top: 15px;
+        }
+        body{
+            background: #333;
+            
+        }
     </style>
 </head>
 
@@ -99,11 +113,7 @@
         <div class="search-box">
             <label for="city">City Name</label>
             <input type="text" id="city-input" placeholder="Kolkata">
-            <label for="state">State Name</label>
-            <input type="text" id="state-input" placeholder="West Bengal">
-            <label for="country">Country Name</label>
-            <input type="text" id="country-input" placeholder="India">
-        
+
             <button id="search-btn">
                 Search
             </button>
@@ -112,17 +122,17 @@
         <div class="weather-card">
 
             <h2 id="city-name">
-                Kolkata
+                - -
             </h2>
 
             <img id="weather-icon" src="" alt="Weather Icon">
 
             <h3 id="temperature">
-                28°C
+                --°C
             </h3>
 
             <p id="weather-condition">
-                Cloudy
+                Loading...
             </p>
 
             <div class="details">
@@ -130,22 +140,39 @@
                 <div class="detail-box">
                     <span>Humidity</span>
                     <p id="humidity">
-                        80%
+                        --%
                     </p>
                 </div>
 
                 <div class="detail-box">
                     <span>Wind</span>
                     <p id="wind-speed">
-                        10 km/h
+                        -- km/h
                     </p>
                 </div>
 
             </div>
 
+            <div class="details second-row">
+
+                <div class="detail-box">
+                    <span>Sunrise</span>
+                    <p id="sunrise">
+                        --:-- AM
+                    </p>
+                </div>
+
+                <div class="detail-box">
+                    <span>Sunset</span>
+                    <p id="sunset">
+                        --:-- PM
+                    </p>
+                </div>
+
         </div>
 
     </div>
-<script src="weather.js"></script>
+    <script src="function.js"></script>
 </body>
+
 </html>
